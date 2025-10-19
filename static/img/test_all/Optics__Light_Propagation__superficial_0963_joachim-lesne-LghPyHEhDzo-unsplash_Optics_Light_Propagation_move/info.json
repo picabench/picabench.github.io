@@ -1,0 +1,37 @@
+{
+  "physics_category": "Optics",
+  "physics_law": "Light_Propagation",
+  "difficulty": "superficial",
+  "input_path": "/mnt/shared-storage-user/caoshuo/PICA/images/PICABench_005_kontext_11k_lora256ema_superficial/input_img/0963_joachim-lesne-LghPyHEhDzo-unsplash_Optics_Light_Propagation_move.jpg",
+  "input_basename": "0963_joachim-lesne-LghPyHEhDzo-unsplash_Optics_Light_Propagation_move.jpg",
+  "edit_instruction": "Move the dog to the right side of the image.",
+  "models": [
+    "input",
+    "DiMOO",
+    "Gemini_Edits",
+    "GPT_Image_Edits",
+    "hidream_e1",
+    "omnigen2",
+    "qwenimg",
+    "Seedream_Edits",
+    "stepedit",
+    "bagel_nothink",
+    "bagel_think",
+    "flux_kontext"
+  ],
+  "copied_images": [
+    "input.jpg",
+    "DiMOO.jpg",
+    "Gemini_Edits.jpg",
+    "GPT_Image_Edits.jpg",
+    "hidream_e1.jpg",
+    "omnigen2.jpg",
+    "qwenimg.jpg",
+    "Seedream_Edits.jpg",
+    "stepedit.jpg",
+    "bagel_nothink.jpg",
+    "bagel_think.jpg",
+    "flux_kontext.jpg"
+  ],
+  "missing_models": []
+}

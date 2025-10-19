@@ -1,0 +1,37 @@
+{
+  "physics_category": "Optics",
+  "physics_law": "Light_Propagation",
+  "difficulty": "superficial",
+  "input_path": "/mnt/shared-storage-user/sciprismax/puyuandong/experiments/PhysEdit/results/comparison_vis/images/PICABench_bagel_nothink_superficial/input_img/0976_crystal-y-mi2N4mvLpXA-unsplash_Optics_Light_Propagation_move.jpg",
+  "input_basename": "0976_crystal-y-mi2N4mvLpXA-unsplash_Optics_Light_Propagation_move.jpg",
+  "edit_instruction": "Move the glass of iced tea to the right edge of the table.",
+  "models": [
+    "input",
+    "DiMOO",
+    "Gemini_Edits",
+    "GPT_Image_Edits",
+    "hidream_e1",
+    "omnigen2",
+    "qwenimg",
+    "Seedream_Edits",
+    "stepedit",
+    "bagel_nothink",
+    "bagel_think",
+    "flux_kontext"
+  ],
+  "copied_images": [
+    "input.jpg",
+    "DiMOO.jpg",
+    "Gemini_Edits.jpg",
+    "GPT_Image_Edits.jpg",
+    "hidream_e1.jpg",
+    "omnigen2.jpg",
+    "qwenimg.jpg",
+    "Seedream_Edits.jpg",
+    "stepedit.jpg",
+    "bagel_nothink.jpg",
+    "bagel_think.jpg",
+    "flux_kontext.jpg"
+  ],
+  "missing_models": []
+}

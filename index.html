@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>PICABench: How Far Are We from Physically Realistic Image Editing?</title>
+        <link rel="icon" type="image/x-icon" href="/static/img/icons/jellyfish.ico">
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="PICABench probes physics-aware image editing with a structured benchmark, region-grounded evaluator, and PICA-100K training data.">
+
+        <!-- Open Graph -->
+        <meta property="og:url" content="https://cambrian-mllm.github.io/" />
+        <meta property="og:image" content="https://cambrian-mllm.github.io/static/img/picabench_teaser.png" />
+        <meta property="og:title" content="PICABench: How Far Are We from Physically Realistic Image Editing?" />
+        <meta property="og:description" content="PICABench probes physics-aware image editing with a structured benchmark, region-grounded evaluator, and PICA-100K training data." />
+
+        <!-- Twitter -->
+        <meta name="twitter:url" content="https://cambrian-mllm.github.io/" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://cambrian-mllm.github.io/static/img/picabench_teaser.png" />
+        <meta name="twitter:title" content="PICABench: How Far Are We from Physically Realistic Image Editing?" />
+        <meta name="twitter:description" content="PICABench probes physics-aware image editing with a structured benchmark, region-grounded evaluator, and PICA-100K training data." />
+
+        <script src="./static/js/distill_template.v2.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+        <script src="https://rawgit.com/nstrayer/slid3r/master/dist/slid3r.js"></script>
+
+        <script defer src="./static/js/hider.js"></script>
+        <script src="./static/js/image_interact.js"></script>
+        <script src="./static/js/switch_videos.js"></script>
+        <script defer src="./static/js/picabench-gallery.js"></script>
+        <script defer src="./static/js/picabench-example.js"></script>
+
+        <link rel="stylesheet" href="./static/css/style.css">
+        <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+        <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+        <script defer src="./static/js/medium-zoom.min.js"></script>
+        <script defer src="./static/js/zoom.js"></script>
+    </head>
+    <body>
+        <div class="header-wrapper">
+            <div class="header-container" id="header-container">
+                <div class="header-content">
+                    <h1 style="margin-top: 0px"><i>PICABench</i></h1>
+                    <h2>How Far Are We from Physically Realistic Image Editing?</h2>
+
+                    <div class="icon-container">
+                        <div class="icon-item">
+                            <img src="./static/img/icons/visual.svg" alt="Physics taxonomy icon">
+                            <div><strong>PICABench</strong>: A comprehensive and fine-grained benchmark for physically realistic image editing. </div>
+                        </div>
+                        <div class="icon-item">
+                            <img src="./static/img/icons/eval.svg" alt="Evaluation icon">
+                            <div><strong>PICAEval</strong>: A region-aware, VQA-based evaluation protocol that incorporates
+                                human-annotated key regions to provide interpretable and reliable assessments for physical
+                                correctness.</div>
+                        </div>
+                        <div class="icon-item">
+                            <img src="./static/img/icons/data.svg" alt="Dataset icon">
+                            <div><strong>PICA-100K</strong>: A large-scale dataset derived from synthetic videos, effectively enhances
+                                model's physical consistency while preserving semantic fidelity.</div>
+                        </div>
+                    </div>
+
+                    <div class="button-container">
+                        <!-- replace arxiv -->
+                        <a href="https://arxiv.org" class="button paper-link" target="_blank">
+                            <span class="icon is-small">
+                                <i class="ai ai-arxiv"></i>
+                            </span>
+                            arXiv
+                        </a>
+                        <!-- replace pdf -->
+                        <a href="https://arxiv.org" class="button paper-link" target="_blank">
+                            <span class="icon is-small">
+                                <i class="fas fa-file-pdf"></i>
+                            </span>
+                            <span>pdf</span>
+                        </a>
+                        <!-- replace image -->
+                        <a href="https://github.com" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <i class="fab fa-github"></i>
+                            </span>
+                            <span>Code</span>
+                        </a>
+                        <!-- <br> -->
+                        <!-- <a href="https://huggingface.co" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face logo" style="height: 1em;">
+                            </span>
+                            <span>Checkpoints(Comming Soon)</span>
+                        </a> -->
+                        <a href="https://huggingface.co/datasets/Andrew613/PICABench" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face logo" style="height: 1em;">
+                            </span>
+                            <span>PICABench</span>
+                        </a>
+                        <a href="https://huggingface.co/datasets/Andrew613/PICA-100K" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" alt="Hugging Face logo" style="height: 1em;">
+                            </span>
+                            <span>PICA-100K</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="header-image">
+                    <img draggable="false" src="static/img/picabench_teaser.png" alt="PICABench teaser" class="teaser-image">
+                </div>
+            </div>
+        </div>
+
+        <d-article>
+            <div class="byline">
+                <div class="byline-container">
+                    <p>
+                        <a class="author-link" href="https://andrew0613.github.io" target="_blank" rel="noopener noreferrer">Yuandong Pu<sup>1,2</sup></a> &emsp;
+                        <a class="author-link" href="https://le-zhuo.com" target="_blank" rel="noopener noreferrer">Le Zhuo<sup>3,4</sup></a> &emsp;
+                        <a class="author-link" href="https://scholar.google.com/citations?user=s-exUYYAAAAJ&amp;hl=zh-CN" target="_blank" rel="noopener noreferrer">Songhao Han<sup>5</sup></a> &emsp;
+                        <a class="author-link" href="https://doubiiu.github.io" target="_blank" rel="noopener noreferrer">Jinbo Xing<sup>6</sup></a> &emsp;
+                        <a class="author-link" href="https://scholar.google.com/citations?user=O8lP5XMAAAAJ&amp;hl=zh-CN" target="_blank" rel="noopener noreferrer">Kaiwen Zhu<sup>1,2</sup></a> &emsp;
+                        <a class="author-link" href="https://scholar.google.com/citations?hl=zh-CN&amp;user=7QfNLCQAAAAJ" target="_blank" rel="noopener noreferrer">Shuo Cao<sup>2,7</sup></a> &emsp;
+                        <a class="author-link" href="https://scholar.google.com/citations?hl=zh-CN&amp;user=9WhK1y4AAAAJ" target="_blank" rel="noopener noreferrer">Bin Fu<sup>2</sup></a> &emsp;
+                        <a class="author-link" href="https://colalab.net" target="_blank" rel="noopener noreferrer">Si Liu<sup>5</sup></a> &emsp;
+                        <a class="author-link" href="https://www.ee.cuhk.edu.hk/~hsli/" target="_blank" rel="noopener noreferrer">Hongsheng Li<sup>3</sup></a> &emsp;
+                        <a class="author-link" href="https://wenlongzhang0517.github.io" target="_blank" rel="noopener noreferrer">Wenlong Zhang<sup>2</sup></a> &emsp;
+                        <a class="author-link" href="https://xavierchen34.github.io" target="_blank" rel="noopener noreferrer">Xi Chen<sup>8,*</sup></a> &emsp;
+                        <a class="author-link" href="https://lyh-18.github.io" target="_blank" rel="noopener noreferrer">Yihao Liu<sup>2,*</sup></a>
+                    </p>
+                    <!-- <p style="text-align: center;" class="affiliation-link" id="affiliation">Tech Report</p> -->
+                    <p class="text" style="text-align: center; margin-bottom: 0;">
+                        <span class="author-note"><sup>1</sup> Shanghai Jiao Tong University &nbsp; <sup>2</sup> Shanghai AI Laboratory &nbsp; <sup>3</sup> CUHK MMLab &nbsp; <sup>4</sup> Krea AI</span><br>
+                        <span class="author-note"><sup>5</sup> Beihang University &nbsp; <sup>6</sup> Tongyi Lab &nbsp; <sup>7</sup> USTC &nbsp; <sup>8</sup> The University of Hong Kong</span>
+                    </p>
+                    <p style="text-align: center; margin-bottom: 0;">
+                        <!-- <span class="author-note"><sup>*</sup>Equal contribution</span>&emsp; -->
+                        <span class="author-note"><sup>*</sup>Corresponding author</span>
+                    </p>
+                </div>
+            </div>
+
+            <p class="text abstract">
+                We introduce PICABench—a diagnostic benchmark designed to evaluate physical realism in image editing.<br><br>
+            </p>
+
+            <div class="icon-row">
+                <a href="#motivation" class="icon-link">
+                    <img src="static/img/icons/visual.svg" alt="Motivation icon" class="icon">
+                    Motivation
+                </a>
+                <a href="#benchmark" class="icon-link">
+                    <img src="static/img/icons/data.svg" alt="Benchmark icon" class="icon">
+                    PICABench
+                </a>
+                <a href="#picaeval" class="icon-link">
+                    <img src="static/img/icons/eval.svg" alt="PICAEval icon" class="icon">
+                    PICAEval
+                </a>
+                <a href="#pica100k" class="icon-link">
+                    <img src="static/img/icons/recipe.svg" alt="Dataset icon" class="icon">
+                    PICA-100K
+                </a>
+                <a href="#experiments" class="icon-link">
+                    <img src="static/img/icons/connector.svg" alt="Results icon" class="icon">
+                    LeaderBoard
+                </a>
+            </div>
+
+            <p class="click-hint" style="width: 85%;">
+                <img src="static/img/icons/click.gif" style="width: 1.5rem" alt="click icon">
+                <strong>Click to jump to each section.</strong>
+            </p>
+
+            <hr>
+
+            <div id="motivation" class="sub-section">
+                <h1 class="text">How far are we from physically realistic image editing?</h1>
+                <p class="text">
+                    The realism of image editing depends not only on semantic accuracy but also on the correct rendering of physical effects.
+                    Existing models and benchmarks overlook this limitation by solely emphasizing semantic fidelity and visual consistency.<br>
+                    Consequently, we still lack a clear understanding of <i>how far we are from physically realistic image editing</i>.
+                </p>
+                <d-figure>
+                    <figure>
+                        <img data-zoomable draggable="false" src="static/img/picabench_motivation.png" alt="Challenging physics cases">
+                        <figcaption>
+                            <strong>Figure 1:</strong> Challenging cases from PICABench. Despite providing instruction-aligned outputs,
+                            current SoTA models still struggle with generating physically realistic edits, resulting in unharmonized
+                            lighting, deformation, or state transitions with common editing operations.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+            </div>
+
+            <div id="benchmark" class="sub-section">
+                <h1 class="text">PICABench: A Benchmark for Physically Realistic Image Editing</h1>
+                <p class="text">
+                    To address this gap, we introduce <b>PICABench</b>—a diagnostic benchmark designed to evaluate physical realism in image editing beyond semantic fidelity.<br> 
+                    We categorize physical consistency into three intuitive dimensions that are often overlooked in typical editing tasks: <i>Optics</i>, <i>Mechanics</i>, and <i>State Transition</i>.<br>
+                     <i>Optics</i> includes light propagation, reflection, refraction, and light-source effects; <i>Mechanics</i> captures deformation and causality; and <i>State Transition</i> addresses both global and local state changes. This fine-grained taxonomy facilitates systematic assessment of whether edited images adhere to principles such as lighting consistency, structural plausibility, and realistic state transitions. Together, it enables comprehensive evaluation and targeted diagnosis of physics violations in image editing models.
+                </p>
+
+                <d-figure>
+                    <figure>
+                        <img data-zoomable draggable="false" src="static/img/picabench_statics.png" alt="PICABench statistics">
+                        <figcaption>
+                            <strong>Figure 2:Statistics Analysis of PICABench.</strong> 
+                        </figcaption>
+                    </figure>
+                </d-figure>
+                
+                <div class="picabench-example" id="picabench-example-gallery">
+                    <div class="picabench-example-frame">
+                        <img src="static/img/PICABench_Example/example_optics_lightpropagation.png" alt="PICABench example" id="picabench-example-image" loading="lazy">
+                    </div>
+                </div>
+            <br>
+            </div>
+
+            <div id="picaeval" class="sub-section">
+                <h1 class="text">PICAEval: A Region-Grounded Evaluation Protocol for Physical Realism</h1>
+                <p class="text">
+                    we introduce <b>PICAEval</b>, a region-grounded, question-answering based metric designed to assess physical consistency in a modular, interpretable manner. Inspired by recent metrics like VDCscore, PICAEval decomposes each evaluation instance into multiple region-specific verification questions that can be reliably judged by a VLM. Each benchmark entry is paired with a curated set of spatially grounded yes/no questions designed to probe whether the edited output image preserves physical plausibility within key regions. These questions are tied to visually observable physical phenomena—such as shadows, reflections, object contact, or material deformation—and are anchored to human-annotated regions of interest (ROIs). This design encourages localized, evidence-based reasoning and reduces the influence of irrelevant image content on the VLM's judgment.</p>
+                <d-figure>
+                    <figure>
+                        <img data-zoomable draggable="false" src="static/img/picabench_datacuration.png" alt="PICABench statistics">
+                        <figcaption>
+                            <strong>Figure 3: Overall pipeline for benchmarks construction and evaluation. </strong>
+                            (a–b) We enrich a physics-specific keyword set and retrieve diverse candidate images. (c–d) Human-written editing instructions are expanded into three levels of complexity using GPT-5. (e) Annotators mark physics-critical regions. (f) Spatially grounded yes/no questions are generated to evaluate physical plausibility. (g) During evaluation, VLMs answer each question with reference to the edited region.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+                </div>
+
+            <div id="pica100k" class="sub-section">
+                <h1 class="text">PICA-100K: Learning Physics from Videos</h1>
+                <p class="text">
+                    To address the limitations identified in our benchmark, we introduce <b>PICA-100K</b>, a purely synthetic dataset designed to improve physics-aware image editing. Our decision to use fully generated data is driven by three primary motivations. <b>First</b>, prior work has demonstrated that constructing image-editing data from video is an effective strategy for enhancing model performance, particularly for capturing real world dynamics. <b>Second</b>, building large-scale, real-world datasets tailored to physics-aware editing is prohibitively expensive and labor-intensive. <b>Third</b>, the rapid progress in generative modeling has unlocked new possibilities: state-of-the-art text-to-image models can now generate highly realistic and diverse images, while powerful image-to-video (I2V) models such as Wan2.2-14B simulate complex dynamic processes with remarkable physical fidelity. Together, these generative priors enable the creation of training data with precise and controllable supervision signals, which are essential for training models to perform fine-grained, physically realistic edits. We find that fine-tuning the baseline on PICA-100K enhances the model's performance in real-world evaluation. </p>
+                <d-figure>
+                    <figure>
+                        <img data-zoomable draggable="false" src="static/img/picabench_pica100k.png" alt="PICA-100K pipeline">
+                        <figcaption>
+                            <strong>Figure 4:</strong> Structured scene and motion prompts feed text-to-image and image-to-video models; GPT-5 refines instructions and preferences to produce aligned supervision pairs.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+            </div>
+
+            <div id="experiments" class="sub-section">
+                <h1 class="text">State of the Art Model Performance on PICABench</h1>
+                <p class="text">
+                    We evaluate 11 state-of-the-art editors and unified multimodal models, including GPT-Image-1, Seedream 4.0, FLUX.1 Kontext, Step1X-Edit, Bagel, OmniGen2, UniWorld-V1, and Qwen-Image-Edit. All open-source systems score below 60 overall, underscoring a persistent physics gap. Closed-source models fare better but still miss reflections, refractions, and support cues.
+                </p>
+                <div class="table-container full-width-table" aria-label="PICABench leaderboard">
+                    <table class="data-table">
+                        <caption>PICABench sub-category accuracy (Acc) and consistency (Con) with PICAEVAL-GPT-5. <span class="cell-best">Pink</span> marks the best score in a column and <span class="cell-second">blue</span> the second best.</caption>
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Model</th>
+                                <th colspan="2" class="tb-hdr">LP</th>
+                                <th colspan="2" class="tb-hdr">LSE</th>
+                                <th colspan="2" class="tb-hdr">Reflection</th>
+                                <th colspan="2" class="tb-hdr">Refraction</th>
+                                <th colspan="2" class="tb-hdr">Deformation</th>
+                                <th colspan="2" class="tb-hdr">Causality</th>
+                                <th colspan="2" class="tb-hdr">GST</th>
+                                <th colspan="2" class="tb-hdr">LST</th>
+                                <th colspan="2" class="tb-hdr">Overall</th>
+                            </tr>
+                            <tr>
+                                <th>Acc&nbsp;&uarr;</th>
+                                <th>Con&nbsp;&uarr;</th>
+                                <th>Acc&nbsp;&uarr;</th>
+                                <th>Con&nbsp;&uarr;</th>
+                                <th>Acc&nbsp;&uarr;</th>
+                                <th>Con&nbsp;&uarr;</th>
+                                <th>Acc&nbsp;&uarr;</th>
+                                <th>Con&nbsp;&uarr;</th>
+                                <th>Acc&nbsp;&uarr;</th>
+                                <th>Con&nbsp;&uarr;</th>
+                                <th>Acc&nbsp;&uarr;</th>
+                                <th>Con&nbsp;&uarr;</th>
+                                <th>Acc&nbsp;&uarr;</th>
+                                <th>Con&nbsp;&uarr;</th>
+                                <th>Acc&nbsp;&uarr;</th>
+                                <th>Con&nbsp;&uarr;</th>
+                                <th>Acc&nbsp;&uarr;</th>
+                                <th>Con&nbsp;&uarr;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Gemini</td>
+                                <td>60.29</td>
+                                <td>29.85</td>
+                                <td>59.30</td>
+                                <td>32.29</td>
+                                <td class="cell-best">65.94</td>
+                                <td>27.70</td>
+                                <td>53.95</td>
+                                <td>27.30</td>
+                                <td class="cell-best">59.90</td>
+                                <td>27.34</td>
+                                <td class="cell-best">55.27</td>
+                                <td>30.21</td>
+                                <td>60.60</td>
+                                <td>38.71</td>
+                                <td class="cell-second">59.88</td>
+                                <td>30.32</td>
+                                <td>59.87</td>
+                                <td>31.32</td>
+                            </tr>
+                            <tr>
+                                <td>GPT-Image-1</td>
+                                <td>61.26</td>
+                                <td>19.31</td>
+                                <td class="cell-best">66.04</td>
+                                <td>20.01</td>
+                                <td>62.39</td>
+                                <td>19.44</td>
+                                <td class="cell-best">59.21</td>
+                                <td>18.94</td>
+                                <td class="cell-second">59.66</td>
+                                <td>20.15</td>
+                                <td>52.88</td>
+                                <td>21.57</td>
+                                <td class="cell-best">70.75</td>
+                                <td>35.96</td>
+                                <td>59.04</td>
+                                <td>20.63</td>
+                                <td class="cell-second">61.08</td>
+                                <td>23.47</td>
+                            </tr>
+                            <tr>
+                                <td>Seedream 4.0</td>
+                                <td class="cell-second">62.71</td>
+                                <td>27.77</td>
+                                <td class="cell-second">65.50</td>
+                                <td>31.63</td>
+                                <td class="cell-second">65.77</td>
+                                <td>27.04</td>
+                                <td>53.51</td>
+                                <td>28.49</td>
+                                <td>59.17</td>
+                                <td>27.13</td>
+                                <td class="cell-second">53.45</td>
+                                <td>30.90</td>
+                                <td>65.12</td>
+                                <td>36.47</td>
+                                <td class="cell-best">66.11</td>
+                                <td>34.16</td>
+                                <td class="cell-best">61.91</td>
+                                <td>31.11</td>
+                            </tr>
+                            <tr class="table-divider"><td colspan="19"></td></tr>
+                            <tr>
+                                <td>DiMOO</td>
+                                <td>46.00</td>
+                                <td>27.70</td>
+                                <td>29.38</td>
+                                <td class="cell-second">33.26</td>
+                                <td>43.68</td>
+                                <td>24.00</td>
+                                <td>35.53</td>
+                                <td>23.93</td>
+                                <td>39.36</td>
+                                <td>30.65</td>
+                                <td>36.71</td>
+                                <td>27.39</td>
+                                <td>22.52</td>
+                                <td class="cell-best">49.42</td>
+                                <td>40.54</td>
+                                <td class="cell-second">36.09</td>
+                                <td>35.66</td>
+                                <td>32.73</td>
+                            </tr>
+                            <tr>
+                                <td>Uniworld-V1</td>
+                                <td>42.37</td>
+                                <td>18.89</td>
+                                <td>34.50</td>
+                                <td>20.48</td>
+                                <td>46.04</td>
+                                <td>19.16</td>
+                                <td>46.05</td>
+                                <td>19.06</td>
+                                <td>40.10</td>
+                                <td>19.16</td>
+                                <td>39.52</td>
+                                <td>18.10</td>
+                                <td>22.85</td>
+                                <td>17.54</td>
+                                <td>39.50</td>
+                                <td>19.56</td>
+                                <td>37.68</td>
+                                <td>18.90</td>
+                            </tr>
+                            <tr>
+                                <td>Bagel</td>
+                                <td>46.97</td>
+                                <td class="cell-best">36.61</td>
+                                <td>39.35</td>
+                                <td class="cell-best">39.59</td>
+                                <td>49.41</td>
+                                <td class="cell-second">35.22</td>
+                                <td>42.54</td>
+                                <td>30.30</td>
+                                <td>44.25</td>
+                                <td class="cell-best">35.65</td>
+                                <td>39.24</td>
+                                <td class="cell-best">37.67</td>
+                                <td>46.80</td>
+                                <td>35.82</td>
+                                <td>49.27</td>
+                                <td class="cell-best">36.14</td>
+                                <td>45.07</td>
+                                <td class="cell-best">36.19</td>
+                            </tr>
+                            <tr>
+                                <td>Bagel-Think</td>
+                                <td>49.88</td>
+                                <td class="cell-second">34.93</td>
+                                <td>50.40</td>
+                                <td>33.24</td>
+                                <td>47.05</td>
+                                <td class="cell-best">35.48</td>
+                                <td>43.42</td>
+                                <td class="cell-second">30.81</td>
+                                <td>49.88</td>
+                                <td>30.13</td>
+                                <td>38.68</td>
+                                <td class="cell-second">37.04</td>
+                                <td>45.70</td>
+                                <td>36.93</td>
+                                <td>50.94</td>
+                                <td>32.90</td>
+                                <td>46.48</td>
+                                <td class="cell-second">34.67</td>
+                            </tr>
+                            <tr>
+                                <td>OmniGen2</td>
+                                <td>49.64</td>
+                                <td>28.17</td>
+                                <td>48.79</td>
+                                <td>32.49</td>
+                                <td>56.49</td>
+                                <td>29.94</td>
+                                <td>39.04</td>
+                                <td>26.78</td>
+                                <td>44.74</td>
+                                <td>31.81</td>
+                                <td>39.80</td>
+                                <td>31.17</td>
+                                <td>51.10</td>
+                                <td>37.42</td>
+                                <td>39.09</td>
+                                <td>31.51</td>
+                                <td>46.79</td>
+                                <td>31.96</td>
+                            </tr>
+                            <tr class="table-divider"><td colspan="19"></td></tr>
+                            <tr>
+                                <td>Hidream-E1.1</td>
+                                <td>49.15</td>
+                                <td>24.87</td>
+                                <td>48.25</td>
+                                <td>27.08</td>
+                                <td>49.07</td>
+                                <td>22.65</td>
+                                <td>46.49</td>
+                                <td>24.61</td>
+                                <td>44.50</td>
+                                <td>23.69</td>
+                                <td>40.51</td>
+                                <td>25.67</td>
+                                <td>56.40</td>
+                                <td>34.62</td>
+                                <td>40.33</td>
+                                <td>25.28</td>
+                                <td>47.90</td>
+                                <td>26.84</td>
+                            </tr>
+                            <tr>
+                                <td>Step1X-Edit</td>
+                                <td>45.04</td>
+                                <td>32.87</td>
+                                <td>47.44</td>
+                                <td>31.69</td>
+                                <td>53.46</td>
+                                <td>31.47</td>
+                                <td>34.21</td>
+                                <td class="cell-best">34.30</td>
+                                <td>45.72</td>
+                                <td class="cell-second">32.24</td>
+                                <td>42.90</td>
+                                <td>35.11</td>
+                                <td>55.85</td>
+                                <td>34.20</td>
+                                <td>46.57</td>
+                                <td>26.54</td>
+                                <td>48.23</td>
+                                <td>32.51</td>
+                            </tr>
+                            <tr>
+                                <td>FLUX.1 Kontext</td>
+                                <td>54.96</td>
+                                <td>30.06</td>
+                                <td>57.41</td>
+                                <td>30.14</td>
+                                <td>57.50</td>
+                                <td>29.09</td>
+                                <td>36.40</td>
+                                <td>28.69</td>
+                                <td>51.83</td>
+                                <td>31.39</td>
+                                <td>38.12</td>
+                                <td>33.89</td>
+                                <td>48.79</td>
+                                <td>37.75</td>
+                                <td>47.61</td>
+                                <td>31.32</td>
+                                <td>48.93</td>
+                                <td>32.40</td>
+                            </tr>
+                            <tr>
+                                <td>Qwen-Edit</td>
+                                <td class="cell-best">62.95</td>
+                                <td>22.36</td>
+                                <td>61.19</td>
+                                <td>27.28</td>
+                                <td>62.90</td>
+                                <td>23.77</td>
+                                <td class="cell-second">55.26</td>
+                                <td>25.65</td>
+                                <td>48.66</td>
+                                <td>24.02</td>
+                                <td>48.95</td>
+                                <td>26.94</td>
+                                <td class="cell-second">67.33</td>
+                                <td>35.56</td>
+                                <td>54.89</td>
+                                <td>25.88</td>
+                                <td>58.29</td>
+                                <td>27.35</td>
+                            </tr>
+                            <tr class="table-divider"><td colspan="19"></td></tr>
+                            <tr>
+                                <td>FLUX.1 Kontext + SFT</td>
+                                <td>57.38</td>
+                                <td>30.39</td>
+                                <td>58.49</td>
+                                <td>30.75</td>
+                                <td>63.07</td>
+                                <td>29.16</td>
+                                <td>36.40</td>
+                                <td>28.94</td>
+                                <td>53.30</td>
+                                <td>31.72</td>
+                                <td>41.07</td>
+                                <td>33.75</td>
+                                <td>47.02</td>
+                                <td class="cell-second">39.55</td>
+                                <td>49.27</td>
+                                <td>32.63</td>
+                                <td>50.64</td>
+                                <td>33.05</td>
+                            </tr>
+                            <tr class="delta-row">
+                                <td>&#916; Improvement</td>
+                                <td>+2.42</td>
+                                <td>+0.33</td>
+                                <td>+1.08</td>
+                                <td>+0.61</td>
+                                <td>+5.57</td>
+                                <td>+0.07</td>
+                                <td>+0.00</td>
+                                <td>+0.25</td>
+                                <td>+1.47</td>
+                                <td>+0.33</td>
+                                <td>+2.95</td>
+                                <td>-0.14</td>
+                                <td>-1.77</td>
+                                <td>+1.80</td>
+                                <td>+1.66</td>
+                                <td>+1.31</td>
+                                <td>+1.71</td>
+                                <td>+0.65</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text">
+                    <strong>We are still far from physically realistic image editing.</strong> The leaderboard shows every open-source model scoring below 60, while only GPT-Image-1 and Seedream 4.0 barely exceed this bar, highlighting a persistent physics-awareness gap.
+                </p>
+                <p class="text">
+                    <strong>Understanding alone does not yield physical realism.</strong> Unified multimodal models trail specialized editors despite their broader world knowledge; even richer prompts provide limited gains, suggesting that the missing piece is built-in physical priors.
+                </p>
+                <p class="text">
+                    <strong>Video-driven data helps close the gap.</strong> Fine-tuning FLUX.1-Kontext on PICA-100K delivers +2.01% optics and +0.27% mechanics improvements without hurting semantics, though state transitions remain challenging—pointing to the need for stronger temporal cues.
+                </p>
+            </div>
+
+            <div id="picabench-visual-results" class="sub-section">
+                <h1 class="text">Qualitative Physics-Aware Results</h1>
+                <p class="text">
+                    Explore representative PICABench cases across eight physics laws. Each law contains four difficulty-aligned examples (two superficial, one intermediate, one explicit). Switch between auto play and interactive modes to inspect how different editors satisfy the same instruction.
+                </p>
+                <div class="picabench-gallery" data-gallery-mode="interactive">
+                    <div class="picabench-controls">
+                        <div class="picabench-mode-toggle" role="group" aria-label="Display mode">
+                            <button type="button" class="picabench-mode-button" data-mode="interactive">Interactive Mode</button>
+                            <button type="button" class="picabench-mode-button active" data-mode="auto">Auto Play Mode</button>
+                        </div>
+                        <div class="picabench-law-controls" id="picabench-law-buttons" role="tablist" aria-label="Physics laws"></div>
+                    </div>
+                    <div class="picabench-case-meta">
+                        <p class="picabench-case-title" id="picabench-case-title"></p>
+                        <p class="picabench-instruction-label">Edit instruction</p>
+                        <p class="picabench-instruction-text" id="picabench-instruction"></p>
+                    </div>
+                    <div class="picabench-grid-wrapper">
+                        <button type="button" class="picabench-nav-button picabench-nav-prev" data-case-nav="prev" aria-label="Previous case">&#x2039;</button>
+                        <div class="picabench-grid" id="picabench-grid">
+                            <p class="picabench-placeholder">Loading visual comparisons…</p>
+                        </div>
+                        <button type="button" class="picabench-nav-button picabench-nav-next" data-case-nav="next" aria-label="Next case">&#x203A;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="human-study" class="sub-section">
+                <h1 class="text">Human Study & Metric Alignment</h1>
+                <p class="text">
+                    We conduct a human study using Elo ranking to further validate the effectiveness of PICAEval. As shown in Fig.5, PICAEval achieves higher correlation with human judgments than the baseline. This result demonstrates that our per-case, region-level human annotations and carefully designed questions effectively mitigate VLM hallucinations, leading to outcomes that better reflect human preferences.</p>
+                <d-figure>
+                    <figure>
+                        <img data-zoomable draggable="false" src="static/img/picabench_humanstudy.png" alt="Human alignment results">
+                        <figcaption>
+                            <strong>Figure 4:</strong> Human preference study summarized with Elo scores across difficulty splits, highlighting agreement trends with PICAEval.
+                        </figcaption>
+                    </figure>
+                </d-figure>
+            </div>
+            <div id="conclusion" class="sub-section">
+                <h1 class="text">Conclusion</h1>
+                <p class="text">
+                    We present PICABench, a new benchmark for evaluating physical realism in image editing, along with PICAEval, a region-grounded, QA-based metric for fine-grained assessment. Our results show that current models, still far from producing physically realistic edits. To improve this, we introduce PICA-100K, a synthetic dataset derived from videos. Fine-tuning on this dataset significantly boosts physical consistency, demonstrating the promise of video-based supervision. We hope our benchmark, metric, and dataset can drive progress toward physics-aware image editing.
+                </p>
+            </div>
+            <div id="acknowledgment" class="sub-section">
+                <h1 class="text">Acknowledgment</h1>
+                <p class="text">
+                    We would like to thank <a href="https://www.rapidata.ai">rapidata</a> for providing the human study platform, as well as the <a href="https://cambrian-mllm.github.io">Cambrain-1</a> authors for providing this webpage template.
+                </p>
+            </div>
+        </d-article>
+        <d-appendix>
+            <h3>BibTeX</h3>
+            <p class="bibtex">
+                @article{pu2025picabench,<br>
+                &nbsp;&nbsp;title={{Picabench: How Far Are We From Physically Realistic Image Editing?}},<br>
+                &nbsp;&nbsp;author={Pu, Yuandong and Zhuo, Le and Han, Songhao and Xing, Jinbo and Zhu, Kaiwen and Cao, Shuo and Fu, Bin and Liu, Si and Li, Hongsheng and Zhang, Wenlong and Chen, Xi and Liu, Yihao},<br>
+                &nbsp;&nbsp;journal={},<br>
+                &nbsp;&nbsp;year={2025}<br>
+                }
+            </p>
+
+            <d-footnote-list></d-footnote-list>
+            <d-citation-list></d-citation-list>
+        </d-appendix>
+        <d-bibliography src="bibliography.bib"></d-bibliography>
+    </body>
+</html>

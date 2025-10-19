@@ -1,0 +1,39 @@
+{
+  "physics_category": "State",
+  "physics_law": "Global",
+  "difficulty": "superficial",
+  "input_path": "/mnt/shared-storage-user/sciprismax/puyuandong/experiments/PhysEdit/results/comparison_vis/images/PICABench_bagel_nothink_superficial/input_img/0542_eric-muhr-IlCF1XeyBJg-unsplash_State_Global_season.jpg",
+  "input_basename": "0542_eric-muhr-IlCF1XeyBJg-unsplash_State_Global_season.jpg",
+  "edit_instruction": "Change the scene from winter to summer.",
+  "models": [
+    "input",
+    "005_kontext_8k_lora256ema",
+    "bagel_nothink",
+    "stepedit",
+    "flux_kontext",
+    "qwenimg",
+    "GPT_Image_Edits",
+    "DiMOO",
+    "Gemini_Edits",
+    "hidream_e1",
+    "omnigen2",
+    "Seedream_Edits",
+    "bagel_think"
+  ],
+  "copied_images": [
+    "input.jpg",
+    "005_kontext_8k_lora256ema.jpg",
+    "bagel_nothink.jpg",
+    "stepedit.jpg",
+    "flux_kontext.jpg",
+    "qwenimg.jpg",
+    "GPT_Image_Edits.jpg",
+    "DiMOO.jpg",
+    "Gemini_Edits.jpg",
+    "hidream_e1.jpg",
+    "omnigen2.jpg",
+    "Seedream_Edits.jpg",
+    "bagel_think.jpg"
+  ],
+  "missing_models": []
+}

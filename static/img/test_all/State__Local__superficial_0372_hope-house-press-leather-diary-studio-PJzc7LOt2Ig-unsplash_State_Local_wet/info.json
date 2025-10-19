@@ -1,0 +1,37 @@
+{
+  "physics_category": "State",
+  "physics_law": "Local",
+  "difficulty": "superficial",
+  "input_path": "/mnt/shared-storage-user/caoshuo/PICA/images/PICABench_005_kontext_11k_lora256ema_superficial/input_img/0372_hope-house-press-leather-diary-studio-PJzc7LOt2Ig-unsplash_State_Local_wet.jpg",
+  "input_basename": "0372_hope-house-press-leather-diary-studio-PJzc7LOt2Ig-unsplash_State_Local_wet.jpg",
+  "edit_instruction": "Make the pencil wet.",
+  "models": [
+    "input",
+    "DiMOO",
+    "Gemini_Edits",
+    "GPT_Image_Edits",
+    "hidream_e1",
+    "omnigen2",
+    "qwenimg",
+    "Seedream_Edits",
+    "stepedit",
+    "bagel_nothink",
+    "bagel_think",
+    "flux_kontext"
+  ],
+  "copied_images": [
+    "input.jpg",
+    "DiMOO.jpg",
+    "Gemini_Edits.jpg",
+    "GPT_Image_Edits.jpg",
+    "hidream_e1.jpg",
+    "omnigen2.jpg",
+    "qwenimg.jpg",
+    "Seedream_Edits.jpg",
+    "stepedit.jpg",
+    "bagel_nothink.jpg",
+    "bagel_think.jpg",
+    "flux_kontext.jpg"
+  ],
+  "missing_models": []
+}
