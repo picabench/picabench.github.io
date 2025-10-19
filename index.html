@@ -64,7 +64,7 @@
                             <img src="./static/img/icons/eval.svg" alt="Evaluation icon">
                             <div><strong>PICAEval</strong>: A region-aware, VQA-based evaluation protocol that incorporates
                                 human-annotated key regions to provide interpretable and reliable assessments for physical
-                                correctness.</div>
+                                realism.</div>
                         </div>
                         <div class="icon-item">
                             <img src="./static/img/icons/data.svg" alt="Dataset icon">
@@ -151,9 +151,9 @@
                 </div>
             </div>
 
-            <p class="text abstract">
+            <!-- <p class="text abstract">
                 We introduce PICABench—a diagnostic benchmark designed to evaluate physical realism in image editing.<br><br>
-            </p>
+            </p> -->
 
             <div class="icon-row">
                 <a href="#motivation" class="icon-link">
@@ -207,9 +207,7 @@
             <div id="benchmark" class="sub-section">
                 <h1 class="text">PICABench: A Benchmark for Physically Realistic Image Editing</h1>
                 <p class="text">
-                    To address this gap, we introduce <b>PICABench</b>—a diagnostic benchmark designed to evaluate physical realism in image editing beyond semantic fidelity.<br> 
-                    We categorize physical consistency into three intuitive dimensions that are often overlooked in typical editing tasks: <i>Optics</i>, <i>Mechanics</i>, and <i>State Transition</i>.<br>
-                     <i>Optics</i> includes light propagation, reflection, refraction, and light-source effects; <i>Mechanics</i> captures deformation and causality; and <i>State Transition</i> addresses both global and local state changes. This fine-grained taxonomy facilitates systematic assessment of whether edited images adhere to principles such as lighting consistency, structural plausibility, and realistic state transitions. Together, it enables comprehensive evaluation and targeted diagnosis of physics violations in image editing models.
+                    To address this gap, we introduce <b>PICABench</b>—a diagnostic benchmark designed to evaluate physical realism in image editing beyond semantic fidelity. We categorize physical consistency into three intuitive dimensions that are often overlooked in typical editing tasks: <i>Optics</i>, <i>Mechanics</i>, and <i>State Transition</i>. <i>Optics</i> includes light propagation, reflection, refraction, and light-source effects; <i>Mechanics</i> captures deformation and causality; and <i>State Transition</i> addresses both global and local state changes. This fine-grained taxonomy facilitates systematic assessment of whether edited images adhere to principles such as lighting consistency, structural plausibility, and realistic state transitions. Together, it enables comprehensive evaluation and targeted diagnosis of physics violations in image editing models.
                 </p>
 
                 <d-figure>
@@ -232,7 +230,7 @@
             <div id="picaeval" class="sub-section">
                 <h1 class="text">PICAEval: A Region-Grounded Evaluation Protocol for Physical Realism</h1>
                 <p class="text">
-                    we introduce <b>PICAEval</b>, a region-grounded, question-answering based metric designed to assess physical consistency in a modular, interpretable manner. Inspired by recent metrics like VDCscore, PICAEval decomposes each evaluation instance into multiple region-specific verification questions that can be reliably judged by a VLM. Each benchmark entry is paired with a curated set of spatially grounded yes/no questions designed to probe whether the edited output image preserves physical plausibility within key regions. These questions are tied to visually observable physical phenomena—such as shadows, reflections, object contact, or material deformation—and are anchored to human-annotated regions of interest (ROIs). This design encourages localized, evidence-based reasoning and reduces the influence of irrelevant image content on the VLM's judgment.</p>
+                    we introduce <b>PICAEval</b>, a region-grounded, question-answering based metric designed to assess physical consistency in a modular, interpretable manner. PICAEval decomposes each evaluation instance into multiple region-specific verification questions that can be reliably judged by a VLM. Each benchmark entry is paired with a curated set of spatially grounded yes/no questions designed to probe whether the edited output image preserves physical plausibility within key regions. These questions are tied to visually observable physical phenomena—such as shadows, reflections, object contact, or material deformation—and are anchored to human-annotated regions of interest (ROIs). This design encourages localized, evidence-based reasoning and reduces the influence of irrelevant image content on the VLM's judgment.</p>
                 <d-figure>
                     <figure>
                         <img data-zoomable draggable="false" src="static/img/picabench_datacuration.png" alt="PICABench statistics">
@@ -261,8 +259,7 @@
             <div id="experiments" class="sub-section">
                 <h1 class="text">State of the Art Model Performance on PICABench</h1>
                 <p class="text">
-                    We evaluate 11 state-of-the-art editors and unified multimodal models, including GPT-Image-1, Seedream 4.0, FLUX.1 Kontext, Step1X-Edit, Bagel, OmniGen2, UniWorld-V1, and Qwen-Image-Edit. All open-source systems score below 60 overall, underscoring a persistent physics gap. Closed-source models fare better but still miss reflections, refractions, and support cues.
-                </p>
+                    We evaluate 11 state-of-the-art editors and unified multimodal models, including GPT-Image-1, Seedream 4.0, FLUX.1 Kontext, Step1X-Edit, Bagel, OmniGen2, UniWorld-V1, and Qwen-Image-Edit. All input images are resized proportionally to a maximum resolution of 1024 on the longer side prior to evaluation. We choose superficial prompts as our default setting.
                 <div class="table-container full-width-table" aria-label="PICABench leaderboard">
                     <table class="data-table">
                         <caption>PICABench sub-category accuracy (Acc) and consistency (Con) with PICAEVAL-GPT-5. <span class="cell-best">Pink</span> marks the best score in a column and <span class="cell-second">blue</span> the second best.</caption>
@@ -608,7 +605,8 @@
                     <strong>Understanding alone does not yield physical realism.</strong> Unified multimodal models trail specialized editors despite their broader world knowledge; even richer prompts provide limited gains, suggesting that the missing piece is built-in physical priors.
                 </p>
                 <p class="text">
-                    <strong>Video-driven data helps close the gap.</strong> Fine-tuning FLUX.1-Kontext on PICA-100K delivers +2.01% optics and +0.27% mechanics improvements without hurting semantics, though state transitions remain challenging—pointing to the need for stronger temporal cues.
+                    <strong>Video-driven data helps close the gap.</strong> Fine-tuning FLUX.1-Kontext on PICA-100K delivers +1.71% overall improvements in overall accuracy over the base model. In addition, it demonstrates better overall physical
+                    consistency, improving from 32.40db to 33.05db.
                 </p>
             </div>
 
@@ -643,7 +641,7 @@
             <div id="human-study" class="sub-section">
                 <h1 class="text">Human Study & Metric Alignment</h1>
                 <p class="text">
-                    We conduct a human study using Elo ranking to further validate the effectiveness of PICAEval. As shown in Fig.5, PICAEval achieves higher correlation with human judgments than the baseline. This result demonstrates that our per-case, region-level human annotations and carefully designed questions effectively mitigate VLM hallucinations, leading to outcomes that better reflect human preferences.</p>
+                    We conduct a human study using Elo ranking to further validate the effectiveness of PICAEval. As shown in Fig.4, PICAEval achieves higher correlation with human judgments than the baseline. This result demonstrates that our per-case, region-level human annotations and carefully designed questions effectively mitigate VLM hallucinations, leading to outcomes that better reflect human preferences.</p>
                 <d-figure>
                     <figure>
                         <img data-zoomable draggable="false" src="static/img/picabench_humanstudy.png" alt="Human alignment results">
