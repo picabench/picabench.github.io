@@ -1677,7 +1677,7 @@ iframe {
   position: relative;
   background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 16px 36px rgba(20, 34, 70, 0.12);
+  box-shadow: none;
   padding: 1.2rem;
   display: flex;
   flex-direction: column;
@@ -1690,6 +1690,15 @@ iframe {
   max-height: 520px;
   object-fit: contain;
   margin: 0 auto;
+}
+
+.picabench-example-caption {
+  margin: 0.8rem auto 0;
+  max-width: 640px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(25, 33, 58, 0.85);
+  text-align: center;
 }
 
 @media (max-width: 768px) {
